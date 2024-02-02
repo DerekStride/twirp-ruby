@@ -79,7 +79,7 @@ module Twirp
       end
 
       headers = env[:http_response_headers].merge('content-type' => env[:content_type])
-      stream = Stream.new(env) { |input| call_handler(input, env) }
+      stream = Stream.new(env) { |stream| call_handler(stream) }
 
       [200, headers, stream]
     rescue => e
@@ -137,16 +137,8 @@ module Twirp
     end
 
     # Call handler method and return a Protobuf Message or a Twirp::Error.
-    def call_handler(input, env)
-      out = @handler.send(env[:ruby_method], input, env)
-      case out
-      when env[:output_class], Twirp::Error
-        out
-      when Hash
-        env[:output_class].new(out)
-      else
-        Twirp::Error.internal("Handler method #{m} expected to return one of #{env[:output_class].name}, Hash or Twirp::Error, but returned #{out.class.name}.")
-      end
+    def call_handler(stream)
+      @handler.send(stream.env[:ruby_method], stream)
     end
   end
 end
