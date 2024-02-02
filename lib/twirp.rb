@@ -14,5 +14,6 @@
 require_relative 'twirp/version'
 require_relative 'twirp/error'
 require_relative 'twirp/service'
+require_relative 'twirp/stream'
 require_relative 'twirp/client'
 require_relative 'twirp/client_json'
